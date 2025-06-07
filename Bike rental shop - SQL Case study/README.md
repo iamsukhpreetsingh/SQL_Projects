@@ -12,7 +12,6 @@ This project demonstrates advanced SQL techniques through real-world business sc
 The database consists of five main tables:
 
 - **`customer`** - Customer information and profiles
-  <img src="image.png" alt="Inventory Analysis Results" width="200" height="200">
 - **`bike`** - Bike inventory with categories, pricing, and availability status
 - **`rental`** - Rental transactions and history
 - **`membership_type`** - Different membership plan types and pricing
