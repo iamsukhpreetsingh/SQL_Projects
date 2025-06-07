@@ -1,5 +1,5 @@
 # 🚴‍♀️ Bike Rental Shop Database Analysis 
-(source: https://learnsql.com/course/2023-advanced-sql-practice-c hallenges/november-challenge/introduction/introduction/)
+(source: https://learnsql.com/course/2023-advanced-sql-practice-challenges/november-challenge/introduction/introduction/)
 
 A comprehensive SQL analysis project for a bike rental business, featuring advanced queries for business intelligence, revenue analysis, and operational insights.
 
