@@ -1,0 +1,400 @@
+-- E-COMMERCE DATABASE SCHEMA AND DATA
+-- Database: TechMart (Online Electronics Store)
+
+-- Create Tables
+CREATE TABLE customers (
+    customer_id INT PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    email VARCHAR(100),
+    registration_date DATE,
+    city VARCHAR(50),
+    country VARCHAR(50),
+    loyalty_tier VARCHAR(20) -- Bronze, Silver, Gold, Platinum
+);
+
+CREATE TABLE categories (
+    category_id INT PRIMARY KEY,
+    category_name VARCHAR(50),
+    parent_category_id INT,
+    commission_rate DECIMAL(4,2) -- Commission percentage
+);
+
+CREATE TABLE products (
+    product_id INT PRIMARY KEY,
+    product_name VARCHAR(100),
+    category_id INT,
+    brand VARCHAR(50),
+    price DECIMAL(10,2),
+    cost DECIMAL(10,2),
+    launch_date DATE,
+    is_active BOOLEAN,
+    FOREIGN KEY (category_id) REFERENCES categories(category_id)
+);
+
+CREATE TABLE orders (
+    order_id INT PRIMARY KEY,
+    customer_id INT,
+    order_date DATE,
+    order_status VARCHAR(20), -- Pending, Shipped, Delivered, Cancelled, Returned
+    shipping_cost DECIMAL(8,2),
+    discount_amount DECIMAL(8,2),
+    payment_method VARCHAR(20),
+    FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
+);
+
+CREATE TABLE order_items (
+    order_item_id INT PRIMARY KEY,
+    order_id INT,
+    product_id INT,
+    quantity INT,
+    unit_price DECIMAL(10,2),
+    FOREIGN KEY (order_id) REFERENCES orders(order_id),
+    FOREIGN KEY (product_id) REFERENCES products(product_id)
+);
+
+CREATE TABLE reviews (
+    review_id INT PRIMARY KEY,
+    product_id INT,
+    customer_id INT,
+    rating INT, -- 1 to 5
+    review_date DATE,
+    verified_purchase BOOLEAN,
+    FOREIGN KEY (product_id) REFERENCES products(product_id),
+    FOREIGN KEY (customer_id) REFERENCES customers(customer_id)
+);
+
+CREATE TABLE supplier_orders (
+    supplier_order_id INT PRIMARY KEY,
+    product_id INT,
+    supplier_name VARCHAR(50),
+    order_date DATE,
+    quantity_ordered INT,
+    unit_cost DECIMAL(10,2),
+    delivery_date DATE,
+    FOREIGN KEY (product_id) REFERENCES products(product_id)
+);
+
+-- Insert Sample Data
+
+-- Categories
+INSERT INTO categories VALUES
+(1, 'Electronics', NULL, 8.50),
+(2, 'Smartphones', 1, 12.00),
+(3, 'Laptops', 1, 10.50),
+(4, 'Accessories', 1, 15.00),
+(5, 'Gaming', 1, 11.00),
+(6, 'Home & Garden', NULL, 9.00),
+(7, 'Smart Home', 6, 13.50);
+
+-- Products
+INSERT INTO products VALUES
+(101, 'iPhone 15 Pro', 2, 'Apple', 1199.99, 850.00, '2023-09-15', TRUE),
+(102, 'Samsung Galaxy S24', 2, 'Samsung', 899.99, 650.00, '2024-01-20', TRUE),
+(103, 'MacBook Air M3', 3, 'Apple', 1399.99, 1000.00, '2024-03-10', TRUE),
+(104, 'Dell XPS 13', 3, 'Dell', 1199.99, 850.00, '2023-08-20', TRUE),
+(105, 'AirPods Pro', 4, 'Apple', 249.99, 120.00, '2023-10-05', TRUE),
+(106, 'Sony WH-1000XM5', 4, 'Sony', 399.99, 200.00, '2023-05-15', TRUE),
+(107, 'PlayStation 5', 5, 'Sony', 499.99, 400.00, '2023-11-20', TRUE),
+(108, 'Xbox Series X', 5, 'Microsoft', 499.99, 400.00, '2023-11-20', TRUE),
+(109, 'Nintendo Switch OLED', 5, 'Nintendo', 349.99, 250.00, '2023-07-10', FALSE),
+(110, 'Smart Thermostat', 7, 'Nest', 249.99, 150.00, '2024-01-15', TRUE);
+
+-- Customers
+INSERT INTO customers VALUES
+(1001, 'John', 'Smith', 'john.smith@email.com', '2023-01-15', 'New York', 'USA', 'Gold'),
+(1002, 'Emma', 'Johnson', 'emma.j@email.com', '2023-03-22', 'London', 'UK', 'Platinum'),
+(1003, 'Michael', 'Brown', 'mike.brown@email.com', '2023-02-10', 'Toronto', 'Canada', 'Silver'),
+(1004, 'Sarah', 'Davis', 'sarah.d@email.com', '2023-06-18', 'Sydney', 'Australia', 'Bronze'),
+(1005, 'David', 'Wilson', 'david.w@email.com', '2023-04-05', 'Berlin', 'Germany', 'Gold'),
+(1006, 'Lisa', 'Miller', 'lisa.m@email.com', '2023-08-12', 'Paris', 'France', 'Silver'),
+(1007, 'James', 'Taylor', 'james.t@email.com', '2023-12-03', 'Tokyo', 'Japan', 'Platinum'),
+(1008, 'Anna', 'Anderson', 'anna.a@email.com', '2024-01-20', 'Stockholm', 'Sweden', 'Bronze'),
+(1009, 'Robert', 'Martinez', 'robert.m@email.com', '2023-09-15', 'Madrid', 'Spain', 'Gold'),
+(1010, 'Jennifer', 'Garcia', 'jen.garcia@email.com', '2023-11-08', 'Mexico City', 'Mexico', 'Silver');
+
+-- Orders
+INSERT INTO orders VALUES
+(2001, 1001, '2024-01-15', 'Delivered', 15.99, 50.00, 'Credit Card'),
+(2002, 1002, '2024-01-18', 'Delivered', 25.99, 0.00, 'PayPal'),
+(2003, 1003, '2024-01-20', 'Delivered', 12.99, 75.00, 'Credit Card'),
+(2004, 1001, '2024-02-05', 'Delivered', 18.99, 25.00, 'Credit Card'),
+(2005, 1004, '2024-02-12', 'Cancelled', 0.00, 0.00, 'Credit Card'),
+(2006, 1005, '2024-02-15', 'Delivered', 22.50, 100.00, 'Bank Transfer'),
+(2007, 1002, '2024-03-01', 'Delivered', 35.00, 0.00, 'PayPal'),
+(2008, 1006, '2024-03-10', 'Shipped', 19.99, 40.00, 'Credit Card'),
+(2009, 1007, '2024-03-15', 'Delivered', 45.00, 150.00, 'Credit Card'),
+(2010, 1008, '2024-03-20', 'Returned', 28.99, 20.00, 'Debit Card'),
+(2011, 1009, '2024-04-01', 'Delivered', 15.50, 0.00, 'PayPal'),
+(2012, 1010, '2024-04-05', 'Pending', 21.00, 30.00, 'Credit Card'),
+(2013, 1003, '2024-04-12', 'Delivered', 33.99, 80.00, 'Bank Transfer'),
+(2014, 1001, '2024-04-18', 'Delivered', 16.99, 35.00, 'Credit Card'),
+(2015, 1005, '2024-04-25', 'Shipped', 29.50, 60.00, 'PayPal');
+
+-- Order Items
+INSERT INTO order_items VALUES
+(3001, 2001, 101, 1, 1199.99),
+(3002, 2001, 105, 2, 249.99),
+(3003, 2002, 103, 1, 1399.99),
+(3004, 2002, 106, 1, 399.99),
+(3005, 2003, 102, 1, 899.99),
+(3006, 2003, 105, 1, 249.99),
+(3007, 2004, 104, 1, 1199.99),
+(3008, 2005, 107, 1, 499.99), -- Cancelled order
+(3009, 2006, 108, 1, 499.99),
+(3010, 2006, 110, 2, 249.99),
+(3011, 2007, 101, 1, 1199.99),
+(3012, 2008, 106, 1, 399.99),
+(3013, 2008, 105, 1, 249.99),
+(3014, 2009, 103, 1, 1399.99),
+(3015, 2009, 107, 1, 499.99),
+(3016, 2010, 102, 1, 899.99), -- Returned order
+(3017, 2011, 109, 1, 349.99),
+(3018, 2012, 110, 1, 249.99),
+(3019, 2013, 104, 1, 1199.99),
+(3020, 2013, 106, 1, 399.99),
+(3021, 2014, 105, 3, 249.99),
+(3022, 2015, 108, 1, 499.99);
+
+-- Reviews
+INSERT INTO reviews VALUES
+(4001, 101, 1001, 5, '2024-01-25', TRUE),
+(4002, 105, 1001, 4, '2024-01-26', TRUE),
+(4003, 103, 1002, 5, '2024-01-28', TRUE),
+(4004, 106, 1002, 5, '2024-01-29', TRUE),
+(4005, 102, 1003, 4, '2024-01-30', TRUE),
+(4006, 104, 1001, 4, '2024-02-15', TRUE),
+(4007, 108, 1005, 5, '2024-02-25', TRUE),
+(4008, 110, 1005, 3, '2024-02-26', TRUE),
+(4009, 101, 1002, 5, '2024-03-11', TRUE),
+(4010, 106, 1006, 4, '2024-03-20', FALSE), -- Not verified purchase
+(4011, 103, 1007, 5, '2024-03-25', TRUE),
+(4012, 107, 1007, 4, '2024-03-26', TRUE),
+(4013, 109, 1009, 3, '2024-04-11', TRUE),
+(4014, 105, 1001, 5, '2024-04-28', TRUE),
+(4015, 104, 1003, 4, '2024-04-22', TRUE);
+
+-- Supplier Orders
+INSERT INTO supplier_orders VALUES
+(5001, 101, 'Apple Supply Co', '2023-12-01', 100, 850.00, '2023-12-15'),
+(5002, 102, 'Samsung Direct', '2023-12-05', 80, 650.00, '2023-12-20'),
+(5003, 103, 'Apple Supply Co', '2024-02-01', 50, 1000.00, '2024-02-15'),
+(5004, 104, 'Dell Enterprise', '2023-11-15', 60, 850.00, '2023-11-30'),
+(5005, 105, 'Apple Supply Co', '2023-12-10', 200, 120.00, '2023-12-25'),
+(5006, 106, 'Sony Electronics', '2023-10-01', 75, 200.00, '2023-10-15'),
+(5007, 107, 'Sony Gaming', '2023-10-20', 30, 400.00, '2023-11-05'),
+(5008, 108, 'Microsoft Gaming', '2023-10-25', 25, 400.00, '2023-11-10'),
+(5009, 109, 'Nintendo Supply', '2023-06-01', 40, 250.00, '2023-06-15'),
+(5010, 110, 'Nest Distribution', '2023-12-20', 60, 150.00, '2024-01-05');
+
+
+
+
+
+
+SELECT * FROM customers; -- Should return 10
+SELECT * FROM products; -- Should return 10  
+SELECT * FROM orders; -- Should return 15
+SELECT * FROM order_items; -- Should return 22
+SELECT * FROM reviews; -- Should return 15
+
+
+WITH unified_cte AS(
+
+SELECT c.customer_id, c.first_name, c.last_name, c.email, c.registration_date, c.city, c.country, c.loyalty_tier, 
+o.order_id, o.order_date, o.order_status, o.shipping_cost, o.discount_amount, o.payment_method, 
+oi.order_item_id, oi.product_id, oi.quantity, oi.unit_price,
+p.product_name, p.category_id, p.brand, p.price, p.cost, p.launch_date, p.is_active,
+r.review_id, r.rating, r.review_date, r.verified_purchase
+FROM customers c
+JOIN orders o ON c.customer_id = o.customer_id
+JOIN order_items oi ON o.order_id = oi.order_id
+JOIN products p ON p.product_id = oi.product_id
+JOIN reviews r ON r.product_id = oi.product_id
+
+)
+
+
+
+CREATE VIEW unified_view 
+AS
+	SELECT c.customer_id, c.first_name, c.last_name, c.email, c.registration_date, c.city, c.country, c.loyalty_tier, 
+	o.order_id, o.order_date, o.order_status, o.shipping_cost, o.discount_amount, o.payment_method, 
+	oi.order_item_id, oi.product_id, oi.quantity, oi.unit_price,
+	p.product_name, p.category_id, p.brand, p.price, p.cost, p.launch_date, p.is_active,
+	r.review_id, r.rating, r.review_date, r.verified_purchase
+	FROM customers c
+	JOIN orders o ON c.customer_id = o.customer_id
+	JOIN order_items oi ON o.order_id = oi.order_id
+	JOIN products p ON p.product_id = oi.product_id
+	JOIN reviews r ON r.product_id = oi.product_id
+
+
+/*
+QUESTION 1: Customer Lifetime Value Analysis
+Find customers who have made purchases in at least 3 different product categories, 
+along with their total spending, average order value, and the number of different 
+categories they've purchased from. Order by total spending descending.
+*/
+
+
+
+SELECT customer_id, a as num_of_categories,
+SUM(total) OVER(PARTITION BY customer_id) as total_spendings,
+ROUND(AVG(total) OVER(PARTITION BY customer_id), 2) as avg_order_val
+FROM (
+	SELECT customer_id, category_id, 
+	sum(price) as total, 
+	round(avg(price), 2) AS average,
+	COUNT(category_id) OVER(PARTITION BY customer_id) as a
+	FROM unified_view
+	GROUP by category_id, customer_id
+	)
+WHERE a >= 3
+
+
+/*
+QUESTION 2: Product Performance with Seasonal Trends
+Identify products that have been ordered in both Q1 2024 (Jan-Mar) and Q2 2024 (Apr-Jun),
+showing the quantity sold in each quarter, the percentage change in sales volume,
+and classify the trend as 'Growing', 'Declining', or 'Stable' (±10% threshold).
+*/
+
+WITH Q1 AS(
+SELECT product_name, COUNT(PRODUCT_NAME) AS Q1_QTY FROM (
+SELECT product_name, EXTRACT(QUARTER FROM order_date) AS quarter
+FROM unified_view
+WHERE EXTRACT(QUARTER FROM order_date) = 1
+)
+GROUP BY product_name, quarter)
+
+, Q2 AS(
+SELECT product_name, COUNT(PRODUCT_NAME) AS Q2_QTY FROM (
+SELECT product_name, EXTRACT(QUARTER FROM order_date) AS quarter
+FROM unified_view
+WHERE EXTRACT(QUARTER FROM order_date) = 2
+)
+GROUP BY product_name, quarter)
+
+, final as (
+SELECT 
+    Q1.product_name, 
+    Q1.Q1_QTY, 
+    COALESCE(Q2.Q2_QTY, 0) AS Q2_QTY,
+    CASE 
+        WHEN Q1.Q1_QTY = 0 THEN NULL
+        ELSE ROUND(((COALESCE(Q2.Q2_QTY, 0) - Q1.Q1_QTY) / Q1.Q1_QTY::numeric) * 100, 2)
+    END AS change_percentage
+FROM Q1
+LEFT JOIN Q2 ON Q1.product_name = Q2.product_name)
+
+SELECT *,
+CASE WHEN change_percentage < 0 THEN 'Declining'
+WHEN change_percentage > 0 THEN 'increasing'
+ELSE 'stable' END AS Trend
+FROM final
+
+
+
+/*
+QUESTION 3: Advanced Customer Segmentation
+Create a customer segmentation based on RFM analysis (Recency, Frequency, Monetary).
+For each customer, calculate:
+- Recency: Days since last order (as of 2024-05-01)
+- Frequency: Total number of completed orders
+- Monetary: Total amount spent on completed orders
+*/
+with cte as(
+SELECT customer_id, Recency_Days, 
+ROW_NUMBER() OVER(PARTITION BY customer_id) as rn,
+COUNT(Recency_Days) OVER(PARTITION BY customer_id) AS FREQUENCY, 
+SUM(price) OVER(PARTITION BY customer_id) as Monetary
+FROM(
+SELECT customer_id, '2024-05-01' - ORDER_DATE AS Recency_Days, price
+from unified_view
+where order_status = 'Delivered'
+)
+GROUP BY customer_id, Recency_Days, price
+)
+
+SELECT customer_id, Recency_Days, FREQUENCY, Monetary FROM cte where rn = 1
+
+/*
+QUESTION 4: Product Profitability with Category Hierarchy
+Calculate the profit margin for each product considering:     
+- Product cost vs selling price
+- Category commission rates
+- Include parent category information for subcategories
+Show products with profit margins below 30% that belong to high-commission categories (>10%).
+*/
+
+
+
+
+/*
+QUESTION 5: Complex Order Analysis with Returns Impact
+Find the top 5 customers by net revenue (excluding cancelled and returned orders),
+but also show their gross revenue, return rate, and average days between orders.
+Include only customers with at least 2 successful orders.
+*/
+
+
+/*
+QUESTION 6: Inventory Turnover and Supplier Analysis
+For each supplier, calculate:
+- Total quantity supplied vs total quantity sold
+- Average time between supplier order and first customer sale
+- Inventory turnover ratio
+- Products that are overstocked (high supply, low sales)
+Only include active products launched in the last 12 months.
+*/
+
+
+/*
+QUESTION 7: Cross-Sell Analysis with Association Rules
+Find product pairs that are frequently bought together in the same order.
+Calculate the support (frequency) and confidence for each product pair,
+showing only pairs where confidence > 30% and support > 2 orders.
+Format: Product A → Product B (support: X orders, confidence: Y%).
+*/
+
+
+/*
+QUESTION 8: Customer Loyalty Tier Migration Analysis
+Analyze customer behavior by loyalty tier, showing:
+- Average order value by tier
+- Percentage of orders that include premium products (price > $500)
+- Customer distribution across tiers
+- Identify customers whose spending doesn't match their loyalty tier
+(e.g., Bronze customers with high spending, Gold customers with low spending)
+*/
+
+/*
+QUESTION 9: Review Quality and Purchase Correlation
+Create a comprehensive product review analysis showing:
+- Products with rating gaps (difference between verified and unverified purchase reviews > 1 point)
+- Correlation between product price and average rating
+- Products with high sales but low review counts (review rate < 10%)
+- Impact of reviews on subsequent sales performance
+*/
+
+/*
+QUESTION 10: Advanced Time Series Revenue Analysis
+Perform a month-over-month revenue analysis for 2024, including:
+- Monthly revenue from completed orders
+- Month-over-month growth rate
+- Cumulative revenue and growth
+- Moving 3-month average
+- Identify the best and worst performing months with reasons
+- Forecast trend classification (accelerating, stable, decelerating)
+Include breakdown by payment method and top-selling category each month.
+*/
+
+
+
+
+
+
+
+
+
